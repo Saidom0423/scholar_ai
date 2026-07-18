@@ -80,13 +80,3 @@ ScholarAI is a premium, feature-rich study workspace designed to help students l
    ```
    The application will launch in Chrome at `http://localhost:3000`.
 
----
-
-## Git Operations
-
-To push latest changes to remote:
-```bash
-git add .
-git commit -m "Add root README.md documentation"
-git push https://github.com/Saidom0423/scholar_ai.git master
-```
