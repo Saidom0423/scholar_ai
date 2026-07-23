@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../main.dart';
 
 class FlashcardStudyScreen extends ConsumerStatefulWidget {
@@ -35,11 +34,13 @@ class _FlashcardStudyScreenState extends ConsumerState<FlashcardStudyScreen> {
     try {
       final response = await ref.read(apiServiceProvider).getFlashcardSet(widget.setId);
       final cardsList = List<Map<String, dynamic>>.from(response['flashcards'] ?? []);
+      if (!mounted) return;
       setState(() {
         _flashcards = cardsList;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _isLoading = false;

@@ -30,6 +30,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     });
     try {
       final docs = await ref.read(apiServiceProvider).getDocuments();
+      if (!mounted) return;
       setState(() {
         _documents = docs;
         _isLoading = false;
@@ -131,7 +132,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(

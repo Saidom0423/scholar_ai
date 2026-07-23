@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -250,11 +249,13 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
   Future<void> _loadPdf() async {
     try {
       final bytes = await ref.read(apiServiceProvider).downloadDocumentBytes(widget.documentId);
+      if (!mounted) return;
       setState(() {
         _pdfBytes = Uint8List.fromList(bytes);
         _loadingPdf = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _pdfError = e.toString();
         _loadingPdf = false;
@@ -265,6 +266,7 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
   Future<void> _loadChatHistory() async {
     try {
       final history = await ref.read(apiServiceProvider).getChatHistory(widget.documentId);
+      if (!mounted) return;
       setState(() {
         _chatMessages.clear();
         _chatMessages.addAll(history);
@@ -272,6 +274,7 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
       });
       _scrollToBottom();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loadingChat = false;
       });
@@ -281,11 +284,13 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
   Future<void> _loadFlashcardSets() async {
     try {
       final sets = await ref.read(apiServiceProvider).getFlashcardSets(widget.documentId);
+      if (!mounted) return;
       setState(() {
         _flashcardSets = sets;
         _loadingFlashcards = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loadingFlashcards = false;
       });
@@ -305,12 +310,14 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
 
     try {
       final aiResponse = await ref.read(apiServiceProvider).sendMessage(widget.documentId, text);
+      if (!mounted) return;
       setState(() {
         _chatMessages.add(aiResponse);
         _sendingMessage = false;
       });
       _scrollToBottom();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _sendingMessage = false;
       });
@@ -328,11 +335,13 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
     });
     try {
       final summary = await ref.read(apiServiceProvider).getSummary(widget.documentId);
+      if (!mounted) return;
       setState(() {
         _summaryMarkdown = summary;
         _generatingSummary = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _generatingSummary = false;
       });
@@ -363,9 +372,11 @@ class _DocumentViewerScreenState extends ConsumerState<DocumentViewerScreen> wit
         );
       }
     } finally {
-      setState(() {
-        _generatingFlashcards = false;
-      });
+      if (mounted) {
+        setState(() {
+          _generatingFlashcards = false;
+        });
+      }
     }
   }
 
@@ -803,10 +814,12 @@ class _TextActionSheetState extends State<_TextActionSheet> {
         _textContent = result;
       }
 
+      if (!mounted) return;
       setState(() {
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _loading = false;

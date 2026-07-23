@@ -41,11 +41,13 @@ class _LibraryChatScreenState extends ConsumerState<LibraryChatScreen> {
   Future<void> _fetchDocuments() async {
     try {
       final docs = await ref.read(apiServiceProvider).getDocuments();
+      if (!mounted) return;
       setState(() {
         _documents = docs;
         _loadingDocs = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loadingDocs = false;
       });
@@ -55,12 +57,14 @@ class _LibraryChatScreenState extends ConsumerState<LibraryChatScreen> {
   Future<void> _loadChatHistory() async {
     try {
       final history = await ref.read(apiServiceProvider).getLibraryChatHistory();
+      if (!mounted) return;
       setState(() {
         _chatMessages = history;
         _loadingChat = false;
       });
       _scrollToBottom();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loadingChat = false;
       });
@@ -87,12 +91,14 @@ class _LibraryChatScreenState extends ConsumerState<LibraryChatScreen> {
 
     try {
       final aiResponse = await ref.read(apiServiceProvider).sendLibraryMessage(text, docFilter);
+      if (!mounted) return;
       setState(() {
         _chatMessages.add(aiResponse);
         _sendingMessage = false;
       });
       _scrollToBottom();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _sendingMessage = false;
       });
